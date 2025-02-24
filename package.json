@@ -1,0 +1,79 @@
+{
+    "name": "multi-cloud-bot-system",
+    "version": "1.0.0",
+    "description": "A multi-cloud automation system leveraging AWS Lambda, DynamoDB, Cloudflare Workers, and Google Cloud Storage",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "preinstall": "node scripts/verify-node-version.js",
+        "start": "node scripts/verify-node-version.js && node src/index.js",
+        "test": "node scripts/verify-node-version.js && NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest",
+        "test:watch": "node scripts/verify-node-version.js && NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --watch",
+        "test:coverage": "node scripts/verify-node-version.js && NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --coverage",
+        "backup": "node scripts/verify-node-version.js && node scripts/backup.js",
+        "report": "node scripts/verify-node-version.js && node scripts/report.js",
+        "lint": "node scripts/verify-node-version.js && eslint src/**/*.js",
+        "deploy": "node scripts/verify-node-version.js && serverless deploy",
+        "monitor": "node scripts/verify-node-version.js && node scripts/monitor.js",
+        "check-types": "tsc --noEmit",
+        "validate": "npm run check-types && npm run lint && npm run test"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.x",
+        "@aws-sdk/lib-dynamodb": "^3.x",
+        "@google-cloud/storage": "^7.x",
+        "discord.js": "^14.x",
+        "grammy": "^1.x",
+        "csv-writer": "^1.6.0",
+        "dotenv": "^16.x",
+        "winston": "^3.x",
+        "rate-limiter-flexible": "^3.x",
+        "bad-words": "^3.x",
+        "express": "^4.x",
+        "validator": "^13.x",
+        "glob": "^10.x",
+        "rimraf": "^5.x",
+        "uuid": "^9.x",
+        "lru-cache": "^10.x",
+        "undici": "^6.x"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.x",
+        "@typescript-eslint/eslint-plugin": "^6.21.0",
+        "@typescript-eslint/parser": "^6.21.0",
+        "eslint": "^8.56.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-n": "^16.6.2",
+        "eslint-plugin-promise": "^6.1.1",
+        "jest": "^29.x",
+        "nodemon": "^3.x",
+        "serverless": "^3.x",
+        "serverless-offline": "^13.x"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/redwan-cse/multi-cloud-bot-system.git"
+    },
+    "bugs": {
+        "url": "https://github.com/redwan-cse/multi-cloud-bot-system/issues"
+    },
+    "homepage": "https://github.com/redwan-cse/multi-cloud-bot-system#readme",
+    "keywords": [
+        "discord",
+        "telegram",
+        "whatsapp",
+        "bot",
+        "aws",
+        "lambda",
+        "cloudflare",
+        "workers",
+        "backup",
+        "monitoring"
+    ],
+    "author": "MD. REDWAN AHMED <contact@redwan.work>",
+    "license": "MIT"
+}

@@ -1,0 +1,291 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS resources for Multi-Cloud Bot Automation System
+
+Parameters:
+  Environment:
+    Type: String
+    Default: development
+    AllowedValues:
+      - development
+      - staging
+      - production
+    Description: Environment for the bot system
+
+  DynamoDBTableName:
+    Type: String
+    Default: BotAutomationSystem
+    Description: Name of the main DynamoDB table
+
+  BackupTableName:
+    Type: String
+    Default: BotSystemBackups
+    Description: Name of the backup metadata table
+
+  LambdaMemorySize:
+    Type: Number
+    Default: 256
+    Description: Memory size for Lambda functions (MB)
+
+  LambdaTimeout:
+    Type: Number
+    Default: 30
+    Description: Timeout for Lambda functions (seconds)
+
+  DeploymentBucket:
+    Type: String
+    Description: 'S3 bucket containing deployment artifacts'
+
+  DeploymentPrefix:
+    Type: String
+    Description: 'Prefix for deployment artifacts in S3 bucket'
+    Default: 'deployment'
+
+  DiscordNotificationWebhookUrl:
+    Type: String
+    Description: 'Discord webhook URL for system notifications'
+    NoEcho: true
+
+  DiscordReportsWebhookUrl:
+    Type: String
+    Description: 'Discord webhook URL for weekly reports'
+    NoEcho: true
+
+  GoogleCloudBucketName:
+    Type: String
+    Description: 'Google Cloud Storage bucket name for backups'
+
+Resources:
+  # IAM Role for Lambda functions
+  BotLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: BotSystemPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
+                Resource: 
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDBTableName}
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${BackupTableName}
+
+  # Main DynamoDB Table
+  BotDataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref DynamoDBTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+        - AttributeName: type
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: TypeIndex
+          KeySchema:
+            - AttributeName: type
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+
+  # Backup Metadata Table
+  BackupMetadataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref BackupTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: backupId
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: backupId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: TimestampIndex
+          KeySchema:
+            - AttributeName: timestamp
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+
+  # Lambda Functions
+  DiscordBotFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-discord-bot
+      Handler: src/lambda/discordBot.handler
+      Role: !GetAtt BotLambdaRole.Arn
+      Code: 
+        S3Bucket: !Sub bot-system-${Environment}
+        S3Key: function.zip
+      Runtime: nodejs22.x
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+          DYNAMODB_BACKUP_TABLE: !Ref BackupTableName
+          NODE_ENV: !Ref Environment
+
+  TelegramBotFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-telegram-bot
+      Handler: src/lambda/telegramBot.handler
+      Role: !GetAtt BotLambdaRole.Arn
+      Code:
+        S3Bucket: !Sub bot-system-${Environment}
+        S3Key: function.zip
+      Runtime: nodejs22.x
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+          DYNAMODB_BACKUP_TABLE: !Ref BackupTableName
+          NODE_ENV: !Ref Environment
+
+  MetaBotFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-meta-bot
+      Handler: src/lambda/metaBot.handler
+      Role: !GetAtt BotLambdaRole.Arn
+      Code:
+        S3Bucket: !Sub bot-system-${Environment}
+        S3Key: function.zip
+      Runtime: nodejs22.x
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+          DYNAMODB_BACKUP_TABLE: !Ref BackupTableName
+          NODE_ENV: !Ref Environment
+
+  CSVExportFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-csv-export
+      Handler: src/lambda/csvExport.handler
+      Role: !GetAtt BotLambdaRole.Arn
+      Code:
+        S3Bucket: !Sub bot-system-${Environment}
+        S3Key: function.zip
+      Runtime: nodejs22.x
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+          DYNAMODB_BACKUP_TABLE: !Ref BackupTableName
+          NODE_ENV: !Ref Environment
+
+  ScheduledTasksFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-scheduled-tasks
+      Handler: src/lambda/scheduledTasks.handler
+      Role: !GetAtt BotLambdaRole.Arn
+      Code:
+        S3Bucket: !Sub bot-system-${Environment}
+        S3Key: function.zip
+      Runtime: nodejs22.x
+      MemorySize: !Ref LambdaMemorySize
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+          DYNAMODB_BACKUP_TABLE: !Ref BackupTableName
+          NODE_ENV: !Ref Environment
+
+  # CloudWatch Event Rule for Scheduled Tasks
+  ScheduledTasksRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub ${Environment}-scheduled-tasks
+      Description: Trigger scheduled tasks every hour
+      ScheduleExpression: rate(1 hour)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt ScheduledTasksFunction.Arn
+          Id: ScheduledTasks
+
+  # Lambda Permission for CloudWatch Events
+  ScheduledTasksPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ScheduledTasksFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt ScheduledTasksRule.Arn
+
+Outputs:
+  DynamoDBTableName:
+    Description: Name of the DynamoDB table
+    Value: !Ref BotDataTable
+
+  BackupTableName:
+    Description: Name of the backup metadata table
+    Value: !Ref BackupMetadataTable
+
+  DiscordBotFunctionArn:
+    Description: ARN of Discord bot Lambda function
+    Value: !GetAtt DiscordBotFunction.Arn
+
+  TelegramBotFunctionArn:
+    Description: ARN of Telegram bot Lambda function
+    Value: !GetAtt TelegramBotFunction.Arn
+
+  MetaBotFunctionArn:
+    Description: ARN of Meta bot Lambda function
+    Value: !GetAtt MetaBotFunction.Arn
+
+  CSVExportFunctionArn:
+    Description: ARN of CSV export Lambda function
+    Value: !GetAtt CSVExportFunction.Arn
+
+  ScheduledTasksFunctionArn:
+    Description: ARN of scheduled tasks Lambda function
+    Value: !GetAtt ScheduledTasksFunction.Arn
+
+  LambdaRoleArn:
+    Description: ARN of Lambda IAM role
+    Value: !GetAtt BotLambdaRole.Arn

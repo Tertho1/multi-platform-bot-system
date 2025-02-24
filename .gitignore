@@ -1,0 +1,104 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+build/
+*.zip
+coverage/
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Testing
+coverage/
+.nyc_output/
+jest-results/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+
+# AWS
+.aws/
+.aws-sam/
+aws-exports.js
+aws-credentials.json
+
+# Google Cloud
+google-credentials.json
+*.serviceaccount.json
+
+# Cloudflare
+.wrangler/
+.cloudflare/
+wrangler.toml
+
+# Github Actions (initially excluded)
+.github/workflows/
+!.github/workflows/README.md
+
+# Platform specific credentials
+discord-token.json
+telegram-token.json
+meta-credentials.json
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# System Files
+.directory
+.Spotlight-V100
+.Trashes
+
+# Debug
+.debug/
+debug.log
+.debugger/
+
+# Cache directories
+.cache/
+.npm/
+.eslintcache
+.prettiercache
+
+# TypeScript
+*.tsbuildinfo
+.tscache/
+
+# Documentation drafts
+docs/_drafts/
+*.draft.md
+
+# Custom scripts
+scripts/local/
+scripts/private/
