@@ -1,40 +1,61 @@
 import { spawn } from 'node:child_process';
 
 const requiredVersion = '22.0.0';
+const currentVersion = process.version.slice(1); // Remove 'v' prefix
 
-function checkVersion() {
-    const currentVersion = process.version.slice(1); // Remove 'v' prefix
+// Check Node.js version
+function checkNodeVersion() {
+    const [major] = currentVersion.split('.');
+    const [reqMajor] = requiredVersion.split('.');
 
-    if (currentVersion.localeCompare(requiredVersion, undefined, { numeric: true }) < 0) {
-        console.error(`Error: Node.js version ${requiredVersion} or higher is required.`);
-        console.error(`Current version: ${currentVersion}`);
+    if (parseInt(major) < parseInt(reqMajor)) {
+        console.error(`Error: Node.js version ${requiredVersion} or higher is required. Current version: ${currentVersion}`);
+        process.exit(1);
+    }
+}
+
+// Verify required features
+async function verifyFeatures() {
+    // WebCrypto (required)
+    if (typeof globalThis.crypto !== 'undefined') {
+        console.log('✓ WebCrypto available');
+    } else {
+        console.error('✗ WebCrypto not available');
         process.exit(1);
     }
 
-    // Check for important Node.js 22 features
-    const features = [
-        { name: 'Test Runner', code: 'node:test' },
-        { name: 'WebCrypto', code: 'node:crypto' },
-        { name: 'Fetch API', code: 'fetch' },
-        { name: 'Web Streams', code: 'node:stream/web' }
-    ];
-
-    features.forEach(feature => {
-        try {
-            import(feature.code);
-            console.log(`✓ ${feature.name} available`);
-        } catch (error) {
-            console.warn(`⚠ ${feature.name} not available: ${error.message}`);
-        }
-    });
-
-    // Verify ES modules support
-    if (import.meta.url) {
-        console.log('✓ ES Modules support verified');
+    // Fetch API (required)
+    if (typeof globalThis.fetch === 'function') {
+        console.log('✓ Fetch API available');
+    } else {
+        console.error('✗ Fetch API not available');
+        process.exit(1);
     }
 
+    // Web Streams (required)
+    if (typeof globalThis.ReadableStream === 'function') {
+        console.log('✓ Web Streams available');
+    } else {
+        console.error('✗ Web Streams not available');
+        process.exit(1);
+    }
+
+    // ES Modules (required)
+    if (import.meta.url) {
+        console.log('✓ ES Modules support verified');
+    } else {
+        console.error('✗ ES Modules not supported');
+        process.exit(1);
+    }
+}
+
+async function main() {
+    checkNodeVersion();
+    await verifyFeatures();
     console.log(`✓ Using Node.js ${currentVersion}`);
 }
 
-// Run version check
-checkVersion();
+main().catch(error => {
+    console.error('Error during verification:', error);
+    process.exit(1);
+});
