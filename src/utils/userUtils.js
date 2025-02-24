@@ -6,9 +6,23 @@ import {
     QueryCommand,
     UpdateCommand
 } from '@aws-sdk/lib-dynamodb';
+import { randomBytes } from 'crypto';
 
 const client = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(client);
+
+/**
+ * Generate a cryptographically secure random string
+ * @param {number} length - Length of the random string
+ * @returns {string} Random string in base36 format
+ */
+function generateSecureRandomString(length) {
+    // Generate random bytes and convert to base36 string
+    const bytes = randomBytes(Math.ceil(length * 3 / 4));
+    return bytes.toString('base64')
+        .replace(/[^a-zA-Z0-9]/g, '')  // Remove non-alphanumeric characters
+        .substring(0, length);          // Trim to desired length
+}
 
 export class UserUtils {
     /**
@@ -52,8 +66,11 @@ export class UserUtils {
             return { success: true, userId: existingUserId };
         }
 
-        // Create new user record
-        const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        // Create new user record with cryptographically secure ID
+        const timestamp = Date.now();
+        const randomString = generateSecureRandomString(10);
+        const userId = `user_${timestamp}_${randomString}`;
+
         await docClient.send(new PutCommand({
             TableName: process.env.DYNAMODB_TABLE_NAME,
             Item: {
