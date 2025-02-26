@@ -102,3 +102,6 @@ docs/_drafts/
 # Custom scripts
 scripts/local/
 scripts/private/
+
+# Wiki folder - managed separately
+/wiki/
