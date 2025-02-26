@@ -1,7 +1,7 @@
 {
-    "name": "multi-cloud-bot-system",
+    "name": "multi-platform-bot-system",
     "version": "1.0.0",
-    "description": "A multi-cloud automation system leveraging AWS Lambda, DynamoDB, Cloudflare Workers, and Google Cloud Storage",
+    "description": "A multi-platform automation system leveraging AWS Lambda, DynamoDB, Cloudflare Workers, and Google Cloud Storage",
     "main": "index.js",
     "type": "module",
     "scripts": {
@@ -57,12 +57,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/redwan-cse/multi-cloud-bot-system.git"
+        "url": "git+https://github.com/redwan-cse/multi-platform-bot-system.git"
     },
     "bugs": {
-        "url": "https://github.com/redwan-cse/multi-cloud-bot-system/issues"
+        "url": "https://github.com/redwan-cse/multi-platform-bot-system/issues"
     },
-    "homepage": "https://github.com/redwan-cse/multi-cloud-bot-system#readme",
+    "homepage": "https://github.com/redwan-cse/multi-platform-bot-system#readme",
     "keywords": [
         "discord",
         "telegram",

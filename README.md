@@ -1,4 +1,4 @@
-# Multi-Cloud Bot Automation System
+# Multi-Platform Bot System
 
 A scalable, multi-platform bot automation system leveraging AWS Lambda, DynamoDB, Cloudflare Workers, and Google Cloud Storage. Built with Node.js and designed to run within free-tier limits.
 
@@ -67,8 +67,8 @@ A scalable, multi-platform bot automation system leveraging AWS Lambda, DynamoDB
 
 1. Clone the repository
 ```bash
-git clone https://github.com/redwan-cse/multi-cloud-bot-system.git
-cd multi-cloud-bot-system
+git clone https://github.com/redwan-cse/multi-platform-bot-system.git
+cd multi-platform-bot-system
 ```
 
 2. Deploy infrastructure
@@ -132,7 +132,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For issues and support:
 1. Check the [Troubleshooting Guide](./docs/Troubleshooting.md)
-2. Search existing [GitHub Issues](https://github.com/redwan-cse/multi-cloud-bot-system/issues)
+2. Search existing [GitHub Issues](https://github.com/redwan-cse/multi-platform-bot-system/issues)
 3. Create a new issue with the provided template
 
 ## Author

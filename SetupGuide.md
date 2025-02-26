@@ -1,4 +1,4 @@
-# Multi-Cloud Bot System Setup Guide
+# Multi-Platform Bot System Setup Guide
 
 Welcome to the Multi-Cloud Bot System! This guide will help you get started with setting up and deploying the system.
 
@@ -72,8 +72,8 @@ Welcome to the Multi-Cloud Bot System! This guide will help you get started with
 
 3. **Initial Setup**
    ```bash
-   git clone https://github.com/redwan-cse/multi-cloud-bot-system.git
-   cd multi-cloud-bot-system
+   git clone https://github.com/redwan-cse/multi-platform-bot-system.git
+   cd multi-platform-bot-system
    npm install
    ```
 
@@ -105,7 +105,7 @@ Welcome to the Multi-Cloud Bot System! This guide will help you get started with
 
 For issues and support:
 1. Check the [Troubleshooting Guide](./docs/Troubleshooting.md)
-2. Search existing [GitHub Issues](https://github.com/redwan-cse/multi-cloud-bot-system/issues)
+2. Search existing [GitHub Issues](https://github.com/redwan-cse/multi-platform-bot-system/issues)
 3. Create a new issue with the provided template
 
 ## Contributing

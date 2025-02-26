@@ -1,6 +1,6 @@
-# Contributing to Multi-Cloud Bot System
+# Contributing to Multi-Platform Bot System
 
-First off, thank you for considering contributing to Multi-Cloud Bot System! It's people like you that make this system better for everyone.
+First off, thank you for considering contributing to Multi-Platform Bot System! It's people like you that make this system better for everyone.
 
 ## Code of Conduct
 
@@ -129,7 +129,7 @@ src/
 ## Issue Reporting
 
 1. **Bug Reports**
-   - Submit issues at: https://github.com/redwan-cse/multi-cloud-bot-system/issues
+   - Submit issues at: https://github.com/redwan-cse/multi-platform-bot-system/issues
    - Follow the issue templates
    - Provide complete information
    - Check existing issues first

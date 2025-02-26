@@ -13,8 +13,8 @@
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/redwan-cse/multi-cloud-bot-system.git
-cd multi-cloud-bot-system
+git clone https://github.com/redwan-cse/multi-platform-bot-system.git
+cd multi-platform-bot-system
 ```
 
 2. Install dependencies:

@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Multi-Cloud Bot System, please follow these steps:
+If you discover a security vulnerability in Multi-Platform Bot System, please follow these steps:
 
 1. **DO NOT** create a public GitHub issue
 2. Email security@redwan.work with:
@@ -188,4 +188,4 @@ If you discover a security vulnerability in Multi-Cloud Bot System, please follo
 
 Security Team:
 - Email: security@redwan.work
-- Security Issues: https://github.com/redwan-cse/multi-cloud-bot-system/security/advisories
+- Security Issues: https://github.com/redwan-cse/multi-platform-bot-system/security/advisories
