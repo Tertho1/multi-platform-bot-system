@@ -5,7 +5,7 @@
 If you discover a security vulnerability in Multi-Platform Bot System, please follow these steps:
 
 1. **DO NOT** create a public GitHub issue
-2. Email security@redwan.work with:
+2. Email [security@redwan.work](mailto:security@redwan.work) with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
@@ -55,5 +55,5 @@ If you discover a security vulnerability in Multi-Platform Bot System, please fo
 ## Contact
 
 Security Team:
-- Email: security@redwan.work
+- Email: [security@redwan.work](mailto:security@redwan.work)
 - Security Issues: https://github.com/redwan-cse/multi-platform-bot-system/security/advisories
