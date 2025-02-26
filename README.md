@@ -81,7 +81,7 @@ For issues and support:
 
 **MD. REDWAN AHMED**
 - GitHub: [@redwan-cse](https://github.com/redwan-cse)
-- Contact: redwan@redwan.work
+- Contact: [contact@redwan.work](mailto:contact@redwan.work)
 
 ## License
 
